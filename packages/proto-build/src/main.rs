@@ -11,10 +11,7 @@ use proto_build::{
 };
 
 /// The Cosmos SDK commit or tag to be cloned and used to build the proto files
-const COSMOS_SDK_REV: &str = "v0.48.1";
-
-/// The osmosis commit or tag to be cloned and used to build the proto files
-// const OSMOSIS_REV: &str = "v21.0.0";
+const FINSCHIA_SDK_REV: &str = "v0.48.1";
 
 /// The wasmd commit or tag to be cloned and used to build the proto files
 const WASMD_REV: &str = "v0.2.0";
@@ -55,8 +52,7 @@ const TMP_BUILD_DIR: &str = "/tmp/tmp-protobuf/";
 pub fn generate() {
     let args: Vec<String> = env::args().collect();
     if args.iter().any(|arg| arg == "--update-deps") {
-        git::update_submodule(FINSCHIA_SDK_DIR, COSMOS_SDK_REV);
-        // git::update_submodule(OSMOSIS_DIR, OSMOSIS_REV);
+        git::update_submodule(FINSCHIA_SDK_DIR, FINSCHIA_SDK_REV);
         git::update_submodule(WASMD_DIR, WASMD_REV);
         git::update_submodule(COMETBFT_DIR, COMETBFT_REV);
         git::update_submodule(IBC_GO_DIR, IBC_GO_REV);
@@ -88,7 +84,7 @@ pub fn generate() {
 
     let cosmos_project = CosmosProject {
         name: "finschia".to_string(),
-        version: COSMOS_SDK_REV.to_string(),
+        version: FINSCHIA_SDK_REV.to_string(),
         project_dir: FINSCHIA_SDK_DIR.to_string(),
         exclude_mods: vec![],
     };
@@ -100,19 +96,14 @@ pub fn generate() {
         exclude_mods: vec![],
     };
 
-    let osmosis_code_generator = CodeGenerator::new(
+    let finschia_code_generator = CodeGenerator::new(
         out_dir,
         tmp_build_dir,
         cosmos_project,
-        vec![
-            ibc_project,
-            cometbft_project,
-            wasmd_project,
-            ics23_project,
-        ],
+        vec![ibc_project, cometbft_project, wasmd_project, ics23_project],
     );
 
-    osmosis_code_generator.generate();
+    finschia_code_generator.generate();
 }
 
 fn main() {
