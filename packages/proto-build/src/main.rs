@@ -37,7 +37,7 @@ const ICS23_REV: &str = "rust/v0.10.0";
 // working directory.
 
 /// The directory generated cosmos-sdk proto files go into in this repo
-const OUT_DIR: &str = "../osmosis-std/src/types/";
+const OUT_DIR: &str = "../finschia-std/src/types/";
 /// Directory where the cosmos-sdk submodule is located
 const FINSCHIA_SDK_DIR: &str = "../../dependencies/finschia-sdk/";
 /// Directory where the wasmd submodule is located
