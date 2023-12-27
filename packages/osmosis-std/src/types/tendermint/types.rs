@@ -924,7 +924,6 @@ pub struct Block {
     #[prost(message, optional, tag = "4")]
     pub last_commit: ::core::option::Option<Commit>,
 }
-
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(
     Clone,
@@ -939,9 +938,157 @@ pub struct Block {
 #[proto_message(type_url = "/tendermint.types.EventDataRoundState")]
 pub struct EventDataRoundState {
     #[prost(int64, tag = "1")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
     pub height: i64,
     #[prost(int32, tag = "2")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
     pub round: i32,
     #[prost(string, tag = "3")]
-    pub step: String,
+    pub step: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(
+    Clone,
+    PartialEq,
+    Eq,
+    ::prost::Message,
+    ::serde::Serialize,
+    ::serde::Deserialize,
+    ::schemars::JsonSchema,
+    CosmwasmExt,
+)]
+#[proto_message(type_url = "/tendermint.types.CanonicalBlockID")]
+pub struct CanonicalBlockId {
+    #[prost(bytes = "vec", tag = "1")]
+    #[serde(
+        serialize_with = "crate::serde::as_base64_encoded_string::serialize",
+        deserialize_with = "crate::serde::as_base64_encoded_string::deserialize"
+    )]
+    pub hash: ::prost::alloc::vec::Vec<u8>,
+    #[prost(message, optional, tag = "2")]
+    pub part_set_header: ::core::option::Option<CanonicalPartSetHeader>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(
+    Clone,
+    PartialEq,
+    Eq,
+    ::prost::Message,
+    ::serde::Serialize,
+    ::serde::Deserialize,
+    ::schemars::JsonSchema,
+    CosmwasmExt,
+)]
+#[proto_message(type_url = "/tendermint.types.CanonicalPartSetHeader")]
+pub struct CanonicalPartSetHeader {
+    #[prost(uint32, tag = "1")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
+    pub total: u32,
+    #[prost(bytes = "vec", tag = "2")]
+    #[serde(
+        serialize_with = "crate::serde::as_base64_encoded_string::serialize",
+        deserialize_with = "crate::serde::as_base64_encoded_string::deserialize"
+    )]
+    pub hash: ::prost::alloc::vec::Vec<u8>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(
+    Clone,
+    PartialEq,
+    Eq,
+    ::prost::Message,
+    ::serde::Serialize,
+    ::serde::Deserialize,
+    ::schemars::JsonSchema,
+    CosmwasmExt,
+)]
+#[proto_message(type_url = "/tendermint.types.CanonicalProposal")]
+pub struct CanonicalProposal {
+    /// type alias for byte
+    #[prost(enumeration = "SignedMsgType", tag = "1")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
+    pub r#type: i32,
+    /// canonicalization requires fixed size encoding here
+    #[prost(sfixed64, tag = "2")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
+    pub height: i64,
+    /// canonicalization requires fixed size encoding here
+    #[prost(sfixed64, tag = "3")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
+    pub round: i64,
+    #[prost(int64, tag = "4")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
+    pub pol_round: i64,
+    #[prost(message, optional, tag = "5")]
+    #[serde(alias = "blockID")]
+    pub block_id: ::core::option::Option<CanonicalBlockId>,
+    #[prost(message, optional, tag = "6")]
+    pub timestamp: ::core::option::Option<crate::shim::Timestamp>,
+    #[prost(string, tag = "7")]
+    #[serde(alias = "chainID")]
+    pub chain_id: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(
+    Clone,
+    PartialEq,
+    Eq,
+    ::prost::Message,
+    ::serde::Serialize,
+    ::serde::Deserialize,
+    ::schemars::JsonSchema,
+    CosmwasmExt,
+)]
+#[proto_message(type_url = "/tendermint.types.CanonicalVote")]
+pub struct CanonicalVote {
+    /// type alias for byte
+    #[prost(enumeration = "SignedMsgType", tag = "1")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
+    pub r#type: i32,
+    /// canonicalization requires fixed size encoding here
+    #[prost(sfixed64, tag = "2")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
+    pub height: i64,
+    /// canonicalization requires fixed size encoding here
+    #[prost(sfixed64, tag = "3")]
+    #[serde(
+        serialize_with = "crate::serde::as_str::serialize",
+        deserialize_with = "crate::serde::as_str::deserialize"
+    )]
+    pub round: i64,
+    #[prost(message, optional, tag = "4")]
+    #[serde(alias = "blockID")]
+    pub block_id: ::core::option::Option<CanonicalBlockId>,
+    #[prost(message, optional, tag = "5")]
+    pub timestamp: ::core::option::Option<crate::shim::Timestamp>,
+    #[prost(string, tag = "6")]
+    #[serde(alias = "chainID")]
+    pub chain_id: ::prost::alloc::string::String,
 }

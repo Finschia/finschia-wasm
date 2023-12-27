@@ -85,69 +85,6 @@ pub struct QueryParamsResponse {
     #[prost(message, optional, tag = "1")]
     pub param: ::core::option::Option<ParamChange>,
 }
-/// QuerySubspacesRequest defines a request type for querying for all registered
-/// subspaces and all keys for a subspace.
-///
-/// Since: cosmos-sdk 0.46
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(
-    Clone,
-    PartialEq,
-    Eq,
-    ::prost::Message,
-    ::serde::Serialize,
-    ::serde::Deserialize,
-    ::schemars::JsonSchema,
-    CosmwasmExt,
-)]
-#[proto_message(type_url = "/cosmos.params.v1beta1.QuerySubspacesRequest")]
-#[proto_query(
-    path = "/cosmos.params.v1beta1.Query/Subspaces",
-    response_type = QuerySubspacesResponse
-)]
-pub struct QuerySubspacesRequest {}
-/// QuerySubspacesResponse defines the response types for querying for all
-/// registered subspaces and all keys for a subspace.
-///
-/// Since: cosmos-sdk 0.46
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(
-    Clone,
-    PartialEq,
-    Eq,
-    ::prost::Message,
-    ::serde::Serialize,
-    ::serde::Deserialize,
-    ::schemars::JsonSchema,
-    CosmwasmExt,
-)]
-#[proto_message(type_url = "/cosmos.params.v1beta1.QuerySubspacesResponse")]
-pub struct QuerySubspacesResponse {
-    #[prost(message, repeated, tag = "1")]
-    pub subspaces: ::prost::alloc::vec::Vec<Subspace>,
-}
-/// Subspace defines a parameter subspace name and all the keys that exist for
-/// the subspace.
-///
-/// Since: cosmos-sdk 0.46
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(
-    Clone,
-    PartialEq,
-    Eq,
-    ::prost::Message,
-    ::serde::Serialize,
-    ::serde::Deserialize,
-    ::schemars::JsonSchema,
-    CosmwasmExt,
-)]
-#[proto_message(type_url = "/cosmos.params.v1beta1.Subspace")]
-pub struct Subspace {
-    #[prost(string, tag = "1")]
-    pub subspace: ::prost::alloc::string::String,
-    #[prost(string, repeated, tag = "2")]
-    pub keys: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
-}
 pub struct ParamsQuerier<'a, Q: cosmwasm_std::CustomQuery> {
     querier: &'a cosmwasm_std::QuerierWrapper<'a, Q>,
 }
@@ -161,8 +98,5 @@ impl<'a, Q: cosmwasm_std::CustomQuery> ParamsQuerier<'a, Q> {
         key: ::prost::alloc::string::String,
     ) -> Result<QueryParamsResponse, cosmwasm_std::StdError> {
         QueryParamsRequest { subspace, key }.query(self.querier)
-    }
-    pub fn subspaces(&self) -> Result<QuerySubspacesResponse, cosmwasm_std::StdError> {
-        QuerySubspacesRequest {}.query(self.querier)
     }
 }

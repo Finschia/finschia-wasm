@@ -29,6 +29,7 @@ pub struct Plan {
     #[prost(message, optional, tag = "2")]
     pub time: ::core::option::Option<crate::shim::Timestamp>,
     /// The height at which the upgrade must be performed.
+    /// Only used if Time is not set.
     #[prost(int64, tag = "3")]
     #[serde(
         serialize_with = "crate::serde::as_str::serialize",
@@ -48,8 +49,6 @@ pub struct Plan {
 }
 /// SoftwareUpgradeProposal is a gov Content type for initiating a software
 /// upgrade.
-/// Deprecated: This legacy proposal is deprecated in favor of Msg-based gov
-/// proposals, see MsgSoftwareUpgrade.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(
     Clone,
@@ -64,20 +63,15 @@ pub struct Plan {
 #[proto_message(type_url = "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal")]
 #[deprecated]
 pub struct SoftwareUpgradeProposal {
-    /// title of the proposal
     #[prost(string, tag = "1")]
     pub title: ::prost::alloc::string::String,
-    /// description of the proposal
     #[prost(string, tag = "2")]
     pub description: ::prost::alloc::string::String,
-    /// plan of the proposal
     #[prost(message, optional, tag = "3")]
     pub plan: ::core::option::Option<Plan>,
 }
 /// CancelSoftwareUpgradeProposal is a gov Content type for cancelling a software
 /// upgrade.
-/// Deprecated: This legacy proposal is deprecated in favor of Msg-based gov
-/// proposals, see MsgCancelUpgrade.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(
     Clone,
@@ -92,10 +86,8 @@ pub struct SoftwareUpgradeProposal {
 #[proto_message(type_url = "/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal")]
 #[deprecated]
 pub struct CancelSoftwareUpgradeProposal {
-    /// title of the proposal
     #[prost(string, tag = "1")]
     pub title: ::prost::alloc::string::String,
-    /// description of the proposal
     #[prost(string, tag = "2")]
     pub description: ::prost::alloc::string::String,
 }
@@ -311,120 +303,6 @@ pub struct QueryModuleVersionsResponse {
     #[prost(message, repeated, tag = "1")]
     pub module_versions: ::prost::alloc::vec::Vec<ModuleVersion>,
 }
-/// QueryAuthorityRequest is the request type for Query/Authority
-///
-/// Since: cosmos-sdk 0.46
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(
-    Clone,
-    PartialEq,
-    Eq,
-    ::prost::Message,
-    ::serde::Serialize,
-    ::serde::Deserialize,
-    ::schemars::JsonSchema,
-    CosmwasmExt,
-)]
-#[proto_message(type_url = "/cosmos.upgrade.v1beta1.QueryAuthorityRequest")]
-#[proto_query(
-    path = "/cosmos.upgrade.v1beta1.Query/Authority",
-    response_type = QueryAuthorityResponse
-)]
-pub struct QueryAuthorityRequest {}
-/// QueryAuthorityResponse is the response type for Query/Authority
-///
-/// Since: cosmos-sdk 0.46
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(
-    Clone,
-    PartialEq,
-    Eq,
-    ::prost::Message,
-    ::serde::Serialize,
-    ::serde::Deserialize,
-    ::schemars::JsonSchema,
-    CosmwasmExt,
-)]
-#[proto_message(type_url = "/cosmos.upgrade.v1beta1.QueryAuthorityResponse")]
-pub struct QueryAuthorityResponse {
-    #[prost(string, tag = "1")]
-    pub address: ::prost::alloc::string::String,
-}
-/// MsgSoftwareUpgrade is the Msg/SoftwareUpgrade request type.
-///
-/// Since: cosmos-sdk 0.46
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(
-    Clone,
-    PartialEq,
-    Eq,
-    ::prost::Message,
-    ::serde::Serialize,
-    ::serde::Deserialize,
-    ::schemars::JsonSchema,
-    CosmwasmExt,
-)]
-#[proto_message(type_url = "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade")]
-pub struct MsgSoftwareUpgrade {
-    /// authority is the address that controls the module (defaults to x/gov unless overwritten).
-    #[prost(string, tag = "1")]
-    pub authority: ::prost::alloc::string::String,
-    /// plan is the upgrade plan.
-    #[prost(message, optional, tag = "2")]
-    pub plan: ::core::option::Option<Plan>,
-}
-/// MsgSoftwareUpgradeResponse is the Msg/SoftwareUpgrade response type.
-///
-/// Since: cosmos-sdk 0.46
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(
-    Clone,
-    PartialEq,
-    Eq,
-    ::prost::Message,
-    ::serde::Serialize,
-    ::serde::Deserialize,
-    ::schemars::JsonSchema,
-    CosmwasmExt,
-)]
-#[proto_message(type_url = "/cosmos.upgrade.v1beta1.MsgSoftwareUpgradeResponse")]
-pub struct MsgSoftwareUpgradeResponse {}
-/// MsgCancelUpgrade is the Msg/CancelUpgrade request type.
-///
-/// Since: cosmos-sdk 0.46
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(
-    Clone,
-    PartialEq,
-    Eq,
-    ::prost::Message,
-    ::serde::Serialize,
-    ::serde::Deserialize,
-    ::schemars::JsonSchema,
-    CosmwasmExt,
-)]
-#[proto_message(type_url = "/cosmos.upgrade.v1beta1.MsgCancelUpgrade")]
-pub struct MsgCancelUpgrade {
-    /// authority is the address that controls the module (defaults to x/gov unless overwritten).
-    #[prost(string, tag = "1")]
-    pub authority: ::prost::alloc::string::String,
-}
-/// MsgCancelUpgradeResponse is the Msg/CancelUpgrade response type.
-///
-/// Since: cosmos-sdk 0.46
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(
-    Clone,
-    PartialEq,
-    Eq,
-    ::prost::Message,
-    ::serde::Serialize,
-    ::serde::Deserialize,
-    ::schemars::JsonSchema,
-    CosmwasmExt,
-)]
-#[proto_message(type_url = "/cosmos.upgrade.v1beta1.MsgCancelUpgradeResponse")]
-pub struct MsgCancelUpgradeResponse {}
 pub struct UpgradeQuerier<'a, Q: cosmwasm_std::CustomQuery> {
     querier: &'a cosmwasm_std::QuerierWrapper<'a, Q>,
 }
@@ -453,8 +331,5 @@ impl<'a, Q: cosmwasm_std::CustomQuery> UpgradeQuerier<'a, Q> {
         module_name: ::prost::alloc::string::String,
     ) -> Result<QueryModuleVersionsResponse, cosmwasm_std::StdError> {
         QueryModuleVersionsRequest { module_name }.query(self.querier)
-    }
-    pub fn authority(&self) -> Result<QueryAuthorityResponse, cosmwasm_std::StdError> {
-        QueryAuthorityRequest {}.query(self.querier)
     }
 }
