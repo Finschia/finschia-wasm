@@ -36,25 +36,43 @@ pub struct Params {
 
 #[test]
 fn test_additional_fields_does_not_break_but_cause_lossy_json_deserialization() {
-    let response = QueryParamsResponse {params: Some(Params{foundation_tax: "foundation tax sample".to_string()})};
+    let response = QueryParamsResponse {
+        params: Some(Params {
+            foundation_tax: "foundation tax sample".to_string(),
+        }),
+    };
 
     // to_binary() and from_binary() is using `serde_json_wasm` under the hood.
     let serialized = to_json_binary(&response.params.unwrap()).unwrap();
     let deserialized: Params = from_json(&serialized).unwrap();
 
     // lossy deserialization
-    assert_eq!(deserialized, Params{foundation_tax: "foundation tax sample".to_string()});
+    assert_eq!(
+        deserialized,
+        Params {
+            foundation_tax: "foundation tax sample".to_string()
+        }
+    );
 }
 
 #[test]
 fn test_additional_fields_does_not_break_but_cause_lossy_proto_deserialization() {
-    let response = QueryParamsResponse {params: Some(Params{foundation_tax: "foundation tax sample".to_string()})};
+    let response = QueryParamsResponse {
+        params: Some(Params {
+            foundation_tax: "foundation tax sample".to_string(),
+        }),
+    };
 
     let serialized = response.params.unwrap().encode_to_vec();
     let deserialized = Params::decode(&serialized[..]).unwrap();
 
     // lossy deserialization
-    assert_eq!(deserialized, Params{foundation_tax: "foundation tax sample".to_string()});
+    assert_eq!(
+        deserialized,
+        Params {
+            foundation_tax: "foundation tax sample".to_string()
+        }
+    );
 }
 
 mod shim {
