@@ -13,10 +13,14 @@ GRPC_PORT_HOST="9090"
 # brew install coreutils
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 source "$SCRIPT_DIR"/env
-TMP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/fnsa.XXXXXXXXX")
-chmod 755 "$TMP_DIR"
-echo "Using temporary dir $TMP_DIR" >&2
-FINSCHIA_LOGFILE="$TMP_DIR/finschia.log"
+
+# TMP_DIR
+CONFIG_DIR=${CONFIG_DIR:-${SCRIPT_DIR}/.finschia}
+CONFIG_DIR=${CONFIG_DIR:+${TMP_DIR}/.finschia}
+
+echo "Using temporary dir $CONFIG_DIR" >&2
+FINSCHIA_LOGFILE="$CONFIG_DIR/finschia.log"
+
 
 # Use a fresh volume for every start
 docker volume rm -f fnsad_data
@@ -26,6 +30,11 @@ INTEG_TEST_DIR=${CUR_PATH}"/../"
 # wasm
 ARTIFACTS=${CUR_PATH}"/../../artifacts"
 
+cp "$SCRIPT_DIR/run_finschia.sh" "/$TMP_DIR/run_finschia.sh"
+cp "/$TMP_DIR/run_finschia.sh" "/tmp/run_finschia.sh"
+cp -r "$CONFIG_DIR" "/tmp/.finschia"
+
+
 docker run --rm \
   --name "$CONTAINER_NAME" \
   -p "$TENDERMINT_PORT_HOST":"$TENDERMINT_PORT_GUEST" \
@@ -33,10 +42,10 @@ docker run --rm \
   -p "$GRPC_PORT_HOST":"$GRPC_PORT_GUEST" \
   -v "$INTEG_TEST_DIR":"/root/scripts" \
   -v "$ARTIFACTS":"/root/artifacts" \
-  --mount type=bind,source="$SCRIPT_DIR/template",target=/template \
+  --mount type=bind,source="$TMP_DIR",target="/tmp" \
   --mount type=volume,source=fnsad_data,target=/root \
   "$REPOSITORY:$VERSION" \
-  /template/run_finschia.sh \
+  "/tmp/run_finschia.sh" \
   >"$FINSCHIA_LOGFILE" 2>&1 &
 
 echo "fnsad running on http://localhost:$TENDERMINT_PORT_HOST and logging into $FINSCHIA_LOGFILE" >&2
