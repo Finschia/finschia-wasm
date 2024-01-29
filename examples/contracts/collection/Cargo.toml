@@ -1,6 +1,9 @@
 [package]
 name          = "collection"
 description   = "Example collection to use finschia-wasm"
+authors       = [
+  "dudong2 <leesj9476lsj@gmail.com>",
+]
 version       = { workspace = true }
 edition       = { workspace = true }
 license       = { workspace = true }
