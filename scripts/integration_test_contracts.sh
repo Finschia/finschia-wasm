@@ -7,7 +7,7 @@ URL='http://localhost:26658'
 CHAIN_OPTION='--chain-id simd-testing --keyring-backend test -b block -o json -y'
 
 ## Wait until the height of the block is greater than or equal to 1.
-timeout 60 bash -c 'until [[ $(curl -s "http://localhost:26658/status?" | jq -r .result.sync_info.latest_block_height) -ge 1 ]]; do sleep 2; done'
+timeout 60 bash -c 'until [[ $(curl -s "http://localhost:26658/status?" | jq -r '.result.sync_info.latest_block_height // 0') -ge 1 ]]; do sleep 0.5; done'
 
 # If the timeout fails, the process will be terminated abnormally.
 exitstatus=$?
