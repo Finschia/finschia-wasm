@@ -8,12 +8,16 @@ source "$SCRIPT_DIR"/env
 
 CHAIN_ID="simd-testing"
 MONIKER="simd-testing"
-CONFIG_DIR=${TMP_DIR:-${SCRIPT_DIR}/.finschia}
-CONFIG_DIR=${TMP_DIR:+${TMP_DIR}/.finschia}
+if [[ -z $1 ]]; then
+  echo "CONFIG_DIR does not exists"
+  exit 1
+else
+  CONFIG_DIR=$1"/.finschia"
+fi
+
 CHAIN_DIR=${CONFIG_DIR}
 
 FNSAD=${FNSAD:-fnsad}
-
 # initialize
 rm -rf $CONFIG_DIR
 

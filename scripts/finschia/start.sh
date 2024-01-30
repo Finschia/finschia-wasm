@@ -14,13 +14,15 @@ GRPC_PORT_HOST="9090"
 SCRIPT_DIR="$(realpath "$(dirname "$0")")"
 source "$SCRIPT_DIR"/env
 
-# TMP_DIR
-CONFIG_DIR=${CONFIG_DIR:-${SCRIPT_DIR}/.finschia}
-CONFIG_DIR=${CONFIG_DIR:+${TMP_DIR}/.finschia}
+if [[ -z $1 ]]; then
+  echo "CONFIG_DIR does not exists"
+  exit 1
+else
+  CONFIG_DIR=$1
+fi
 
 echo "Using temporary dir $CONFIG_DIR" >&2
 FINSCHIA_LOGFILE="$CONFIG_DIR/finschia.log"
-
 
 # Use a fresh volume for every start
 docker volume rm -f fnsad_data
@@ -30,10 +32,8 @@ INTEG_TEST_DIR=${CUR_PATH}"/../"
 # wasm
 ARTIFACTS=${CUR_PATH}"/../../artifacts"
 
-cp "$SCRIPT_DIR/run_finschia.sh" "/$TMP_DIR/run_finschia.sh"
-cp "/$TMP_DIR/run_finschia.sh" "/tmp/run_finschia.sh"
-cp -r "$CONFIG_DIR" "/tmp/.finschia"
-
+cp "$SCRIPT_DIR/run_finschia.sh" "/$CONFIG_DIR/run_finschia.sh"
+cp "/$CONFIG_DIR/run_finschia.sh" "/tmp/run_finschia.sh"
 
 docker run --rm \
   --name "$CONTAINER_NAME" \
@@ -42,7 +42,7 @@ docker run --rm \
   -p "$GRPC_PORT_HOST":"$GRPC_PORT_GUEST" \
   -v "$INTEG_TEST_DIR":"/root/scripts" \
   -v "$ARTIFACTS":"/root/artifacts" \
-  --mount type=bind,source="$TMP_DIR",target="/tmp" \
+  --mount type=bind,source="$CONFIG_DIR",target="/tmp" \
   --mount type=volume,source=fnsad_data,target=/root \
   "$REPOSITORY:$VERSION" \
   "/tmp/run_finschia.sh" \
