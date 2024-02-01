@@ -105,7 +105,7 @@ pub fn generate(version_tags: &HashMap<String, String>) {
 }
 
 fn main() {
-    let iter = dotenvy::from_filename_iter("env").unwrap();
+    let iter = dotenvy::from_filename_iter("env").expect("The env file in which tag is defined was not found.");
     let mut version_tags: HashMap<String, String> = HashMap::new();
 
     for item in iter {
