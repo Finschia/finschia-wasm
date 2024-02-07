@@ -22,7 +22,7 @@ jobs:
           echo "CURRENT_TAG=$CURRENT_TAG" >> $GITHUB_ENV
 
       - name: Check out to finschia
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: Finschia/finschia
           fetch-depth: 0
@@ -63,7 +63,7 @@ jobs:
     steps:
       - name: Check out to finschia-wasm
         if: env.NEW_TAG
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: Finschia/finschia-wasm
 
