@@ -10,7 +10,8 @@ docker pull finschia/finschianode:${TAG}
 export FNSAD="docker run -i --rm -p 26656:26656 -p 26657:26657 -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad"
 
 # Copy init_single.sh from Finschia/finschia/init_single.sh
-init_single=$(mktemp); curl "https://raw.githubusercontent.com/Finschia/finschia/v${TAG}/init_single.sh" > $init_single
+init_single=$(mktemp)
+curl "https://raw.githubusercontent.com/Finschia/finschia/v${TAG}/init_single.sh" -o $init_single
 
 bash -xe $init_single
 
