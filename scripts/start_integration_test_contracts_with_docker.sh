@@ -21,9 +21,9 @@ bash $init_single
 container_id=$(docker run -d -p 26656:26656 -p 26657:26657 -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad start)
 
 repository_top=$(git rev-parse --show-toplevel)
-docker exec ${container_id} apk add --no-cache jq bash curl && \
-docker cp ${repository_top}/scripts/integration_test_contracts.sh ${container_id}:/root/integration_test_contracts.sh && \
-docker cp ${repository_top}/artifacts ${container_id}:/root/artifacts && \
+docker exec ${container_id} apk add --no-cache jq bash curl &&
+docker cp ${repository_top}/scripts/integration_test_contracts.sh ${container_id}:/root/integration_test_contracts.sh &&
+docker cp ${repository_top}/artifacts ${container_id}:/root/artifacts &&
 docker exec ${container_id} /root/integration_test_contracts.sh
 
 docker stop ${container_id}
