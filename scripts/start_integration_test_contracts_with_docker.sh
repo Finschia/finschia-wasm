@@ -18,10 +18,10 @@ env FNSAD="docker run -i --rm -p 26656:26656 -p 26657:26657 -v ${HOME}/.finschia
 
 container_id=$(docker run -d -p 26656:26656 -p 26657:26657 -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad start)
 
-repository_top=$(git rev-parse --show-toplevel)
+script_dir=$(realpath $(dirname $0))
 docker exec ${container_id} apk add --no-cache jq bash curl &&
-docker cp ${repository_top}/scripts/integration_test_contracts.sh ${container_id}:/root/integration_test_contracts.sh &&
-docker cp ${repository_top}/artifacts ${container_id}:/root/artifacts &&
+docker cp ${script_dir}/integration_test_contracts.sh ${container_id}:/root/integration_test_contracts.sh &&
+docker cp ${script_dir}/../artifacts ${container_id}:/root/artifacts &&
 docker exec ${container_id} /root/integration_test_contracts.sh
 
 docker stop ${container_id}
