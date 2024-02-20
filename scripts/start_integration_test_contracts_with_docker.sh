@@ -16,7 +16,7 @@ docker pull finschia/finschianode:${TAG}
 export FNSAD="docker run -i --rm -p 26656:26656 -p 26657:26657 -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad"
 
 # run Finschia/finschia/init_single.sh
-bash -xe $init_single
+bash $init_single
 
 container_id=$(docker run -d -p 26656:26656 -p 26657:26657 -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad start)
 
