@@ -11,7 +11,7 @@ curl "https://raw.githubusercontent.com/Finschia/finschia/${TAG}/init_single.sh"
 # ex. v1.0.0 -> 1.0.0
 TAG=$(echo "$TAG" | cut -c 2-)
 TEST_DOCKER_IMAGE=finschia/finschianode:${TAG}
-docker pull finschia/finschianode:${TAG}
+docker pull TEST_DOCKER_IMAGE
 
 # run Finschia/finschia/init_single.sh
 env FNSAD="docker run -i --rm -p 26656:26656 -p 26657:26657 -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad" bash $init_single
