@@ -17,11 +17,6 @@ jobs:
         with:
           repository: Finschia/finschia-wasm
 
-      - name: Update cargo.lock
-        run: |
-          cargo build
-        working-directory: examples
-
       - name: Build contract
         run: |
           docker run --rm -v "$(pwd)":/code \
