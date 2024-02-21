@@ -3,6 +3,7 @@
 # Commands
 DOCKER=${DOCKER:-docker}
 JQ=${JQ:-jq}
+VERBOSE=${VERBOSE:-false}
 
 script_dir=$(realpath $(dirname $0))
 
@@ -20,7 +21,7 @@ TAG_NUM=$(echo "$TAG" | cut -c 2-)
 echo "##### Pull finschianode docker #####" >&2
 
 TEST_DOCKER_IMAGE=finschia/finschianode:${TAG_NUM}
-${DOCKER} pull ${TEST_DOCKER_IMAGE}
+${DOCKER} pull ${TEST_DOCKER_IMAGE} >&2
 
 echo "##### Init node for test #####" >&2
 
@@ -29,7 +30,7 @@ init_single=$(mktemp)
 curl -s "https://raw.githubusercontent.com/Finschia/finschia/${TAG}/init_single.sh" -o $init_single
 
 # run Finschia/finschia/init_single.sh
-env FNSAD="docker run -i --rm -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad" bash ${init_single}
+env FNSAD="docker run -i --rm -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad" bash ${init_single} >&2
 
 echo "##### Start node #####" >&2
 
@@ -37,17 +38,16 @@ container_id=$(${DOCKER} run -d -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCK
 
 echo "##### Install tools to container #####" >&2
 
-${DOCKER} exec ${container_id} apk add --no-cache jq bash curl &&
+${DOCKER} exec ${container_id} apk add --no-cache jq bash curl >&2 &&
 
 echo "##### Install scripts and contracts to container #####" >&2 &&
-${DOCKER} cp ${script_dir}/integration_test_contracts.sh ${container_id}:/root/integration_test_contracts.sh &&
-docker cp ${script_dir}/../artifacts/collection.wasm ${container_id}:/root/ &&
+${DOCKER} cp ${script_dir}/integration_test_contracts.sh ${container_id}:/root/integration_test_contracts.sh >&2 &&
+docker cp ${script_dir}/../artifacts/collection.wasm ${container_id}:/root/ >&2 &&
 echo "##### Start tests #####" >&2 &&
-${DOCKER} exec ${container_id} /root/integration_test_contracts.sh
+${DOCKER} exec ${container_id} env VERBOSE=${VERBOSE} /root/integration_test_contracts.sh
 
-echo "##### Tests Succeed #####" >&2
 echo "##### Stop docker #####" >&2
-${DOCKER} stop ${container_id}
+${DOCKER} stop ${container_id} >&2
 
 # Remove the temporary file `Finschia/init_single.sh`
 rm $init_single
