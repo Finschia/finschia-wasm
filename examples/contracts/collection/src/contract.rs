@@ -268,7 +268,7 @@ pub fn try_send_nft(
     .into();
 
     Ok(Response::new()
-        .add_attribute("method", "try_mint_nft")
+        .add_attribute("method", "try_send_nft")
         .add_message(msg_send_nft))
 }
 
