@@ -1,7 +1,6 @@
 #!/bin/bash
 
 ## parameters
-CONTRACT_ADDRESS='link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8'
 FROM_ACCOUNT='link146asaycmtydq45kxc8evntqfgepagygelel00h'
 URL='http://localhost:26657'
 CHAIN_OPTION='--chain-id finschia --keyring-backend test -b block -o json -y'
@@ -39,13 +38,15 @@ check_run_info "${raw_log}" "store: "
 
 #*** instantiate collection contract ***
 CODE_ID=$(echo "${result}" | jq '.logs[] | select(.msg_index == 0) | .events[] | select(.type == "store_code") | .attributes[] | select(.key == "code_id") | .value | tonumber')
-result=$(fnsad tx wasm instantiate ${CODE_ID} '{"name":"collection_name","uri":"collection_uri","meta":"collection_meta", "owner":"'${CONTRACT_ADDRESS}'"}' --label collection1 --admin ${FROM_ACCOUNT}  --from ${FROM_ACCOUNT} --node ${URL} ${CHAIN_OPTION})
+result=$(fnsad tx wasm instantiate ${CODE_ID} '{"name":"collection_name","uri":"collection_uri","meta":"collection_meta"}' --label collection --admin ${FROM_ACCOUNT}  --from ${FROM_ACCOUNT} --node ${URL} ${CHAIN_OPTION})
 
 ## confirm a result of `instantiate`
 raw_log=$(echo ${result} | jq .raw_log)
 check_run_info "${raw_log}" "instantiate: "
 
 #*** issue_nft collection contract ***
+CONTRACT_ADDRESS=$(echo "${result}" | jq -r '.logs[] | select(.msg_index == 0) | .events[] | select(.type == "instantiate") | .attributes[] | select(.key == "_contract_address") | .value')
+
 result=$(fnsad tx wasm execute ${CONTRACT_ADDRESS} '{"issue_nft":{"name":"nft1_name","meta":"nft1_meta","owner":"'${CONTRACT_ADDRESS}'"}}' --from ${FROM_ACCOUNT} --node ${URL} --gas 10000000 ${CHAIN_OPTION})
 
 ## confirm a result of `issue_nft`
