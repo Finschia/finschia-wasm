@@ -24,11 +24,11 @@ init_single=$(mktemp)
 curl -s "https://raw.githubusercontent.com/Finschia/finschia/${TAG}/init_single.sh" -o $init_single
 
 # run Finschia/finschia/init_single.sh
-env FNSAD="docker run -i --rm -p 26656:26656 -p 26657:26657 -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad" bash ${init_single}
+env FNSAD="docker run -i --rm -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad" bash ${init_single}
 
 echo "##### Start node #####" >&2
 
-container_id=$(docker run -d -p 26656:26656 -p 26657:26657 -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad start)
+container_id=$(docker run -d -v ${HOME}/.finschia:/root/.finschia ${TEST_DOCKER_IMAGE} fnsad start)
 
 echo "##### Install tools to container #####" >&2
 
