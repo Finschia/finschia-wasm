@@ -41,14 +41,14 @@ const ISSUE_FT_REPLY_ID: u64 = 4;
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
     deps: DepsMut,
-    _env: Env,
+    env: Env,
     _info: MessageInfo,
     msg: InstantiateMsg,
 ) -> Result<Response, ContractError> {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
     let msg_create_contract: CosmosMsg = MsgCreateContract {
-        owner: msg.owner,
+        owner: env.contract.address.to_string(),
         name: msg.name,
         uri: msg.uri,
         meta: msg.meta,
