@@ -9,7 +9,7 @@ script_dir=$(realpath $(dirname $0))
 
 # Build collection.wasm if not exitst
 echo "##### Build collection.wasm if there is not #####" >&2
-env DOCKER=${DOCKER} ${script_dir}/build_collection.sh
+env DOCKER=${DOCKER} ${script_dir}/build_collection.sh >&2
 
 # Get the latest Finschia tag
 TAG=$(curl -s "https://api.github.com/repos/Finschia/finschia/tags" | ${JQ} -r '.[0].name')
