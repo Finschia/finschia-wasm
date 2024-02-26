@@ -42,7 +42,7 @@ ${DOCKER} exec ${container_id} apk add --no-cache jq bash curl >&2 &&
 
 echo "##### Install scripts and contracts to container #####" >&2 &&
 ${DOCKER} cp ${script_dir}/integration_test_contracts.sh ${container_id}:/root/integration_test_contracts.sh >&2 &&
-docker cp ${script_dir}/../artifacts/collection.wasm ${container_id}:/root/ >&2 &&
+docker cp -L ${script_dir}/../artifacts/collection.wasm ${container_id}:/root/ >&2 &&
 echo "##### Start tests #####" >&2 &&
 ${DOCKER} exec ${container_id} env VERBOSE=${VERBOSE} /root/integration_test_contracts.sh
 
