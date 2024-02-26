@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 ## parameters
 COLLECTION_CONTRACT=${COLLECTION_CONTRACT:-collection.wasm}
 VERBOSE=${VERBOSE:-false}
@@ -14,7 +12,6 @@ CHAIN_OPTION='--chain-id finschia --keyring-backend test -b block -o json -y'
 ## Wait until the height of the block is greater than or equal to 1.
 echo "##### Waiting finschia node starts #####" >&2
 timeout 60 bash -c 'until [[ $(curl -s "'${NODE_URL}'/status?" | jq -r ".result.sync_info.latest_block_height // 0") -ge 1 ]]; do sleep 0.5; done'
-echo "Confirmed a node is running" >&2
 
 # If the timeout fails, the process will be terminated abnormally.
 exitstatus=$?
@@ -22,6 +19,10 @@ if [[ $exitstatus -ne 0 ]]; then
   echo "waiting finschia node is timeout" >&2
   exit 1
 fi
+
+set -e
+
+echo "Confirmed a node is running" >&2
 
 # This checks the result is succeed/failed and output it.
 # If it is failed, exit.
