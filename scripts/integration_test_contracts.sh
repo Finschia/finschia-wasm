@@ -1,13 +1,11 @@
 #!/bin/bash
 
 ## parameters
-COLLECTION_CONTRACT=${COLLECTION_CONTRACT:-collection.wasm}
-VERBOSE=${VERBOSE:-false}
-
-# const
-FROM_ACCOUNT=link146asaycmtydq45kxc8evntqfgepagygelel00h
-NODE_URL=http://localhost:26657
-CHAIN_OPTION='--chain-id finschia --keyring-backend test -b block -o json -y'
+COLLECTION_CONTRACT=${COLLECTION_CONTRACT:-"collection.wasm"}
+VERBOSE=${VERBOSE:-"false"}
+FROM_ACCOUNT=${FROM_ACCOUNT:-"link146asaycmtydq45kxc8evntqfgepagygelel00h"}
+NODE_URL=${NODE_URL:-"http://localhost:26657"}
+CHAIN_OPTION=${CHAIN_OPTION:-"--chain-id finschia --keyring-backend test -b block -o json -y"}
 
 ## Wait until the height of the block is greater than or equal to 1.
 echo "##### Waiting finschia node starts #####" >&2
