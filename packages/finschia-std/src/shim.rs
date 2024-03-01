@@ -314,6 +314,7 @@ macro_rules! expand_as_any {
 // must order by type that has more information for Any deserialization to
 // work correctly. Since after serialization, it currently loses @type tag.
 // And deserialization works by trying to iteratively match the structure.
+#[cfg(not(test))]
 expand_as_any!(
     // accounts have distincted structure
     crate::types::cosmos::auth::v1beta1::BaseAccount,
@@ -325,6 +326,8 @@ expand_as_any!(
     crate::types::cosmos::crypto::secp256r1::PubKey,
     crate::types::cosmos::crypto::ed25519::PubKey,
 );
+#[cfg(test)]
+expand_as_any!(crate::types::cosmwasm::wasm::v1::ClearAdminProposal,);
 
 macro_rules! impl_prost_types_exact_conversion {
     ($t:ident | $($arg:ident),*) => {
@@ -394,7 +397,10 @@ pub fn cosmwasm_to_proto_coins(
 mod tests {
     use cosmwasm_std::Uint128;
 
+    use crate::types::cosmos::gov::v1beta1::MsgSubmitProposal;
+
     use super::*;
+    use serde_json;
 
     #[test]
     fn test_coins_conversion() {
@@ -413,5 +419,27 @@ mod tests {
         let cosmwasm_coins = try_proto_to_cosmwasm_coins(proto_coins).unwrap();
 
         assert_eq!(coins, cosmwasm_coins);
+    }
+
+    #[test]
+    fn test_serialization_and_deserialization_with_origin() {
+        let type_url_str = r#"{"content":{"type_url":"/cosmwasm.wasm.v1.ClearAdminProposal","value":"CgNmb28SA2Jhcho/bGluazE0aGoydGF2cThmcGVzZHd4eGN1NDRydHkzaGg5MHZodWpydmNtc3RsNHpyM3R4bWZ2dzlzZ2Yydm44"}, "initial_deposit": [], "proposer": "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
+        let deserialized_data: MsgSubmitProposal = serde_json::from_str(type_url_str).unwrap();
+
+        let macro_str = r#"{"content":{"title":"foo","description":"bar", "contract":"link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}, "initial_deposit": [], "proposer": "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
+        let expected_deserialized_data: MsgSubmitProposal =
+            serde_json::from_str(macro_str).unwrap();
+
+        let result = serde_json::to_string(&deserialized_data).unwrap();
+        let expected = serde_json::to_string(&expected_deserialized_data).unwrap();
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_serialization_and_deserialization_result() {
+        let type_url_str = r#"{"content":{"type_url":"/cosmwasm.wasm.v1.UpdateAdminProposal","value":"CgNmb28SA2JhchoFYWxpY2UiP2xpbmsxNGhqMnRhdnE4ZnBlc2R3eHhjdTQ0cnR5M2hoOTB2aHVqcnZjbXN0bDR6cjN0eG1mdnc5c2dmMnZuOA=="},"initial_deposit":[],"proposer":"link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
+        let deserialized_data: MsgSubmitProposal = serde_json::from_str(type_url_str).unwrap();
+        let result = serde_json::to_string(&deserialized_data).unwrap();
+        assert_eq!(result, type_url_str);
     }
 }
