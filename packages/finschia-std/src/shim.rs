@@ -270,6 +270,25 @@ macro_rules! expand_as_any {
                                 });
                             }
                         )*
+
+                        // if cannot match type struct, try to find type_url
+                        if let serde_cw_value::Value::Map(m) = &value {
+                            if let (Some(serde_cw_value::Value::String(type_url)), Some(serde_cw_value::Value::String(encode_value))) =
+                                (m.get(&serde_cw_value::Value::String("type_url".to_string())), m.get(&serde_cw_value::Value::String("value".to_string())))
+                            {
+                                match BASE64_STANDARD.decode(encode_value) {
+                                    Ok(decoded_value) => {
+                                        return Ok(Any {
+                                            type_url: type_url.clone(),
+                                            value: decoded_value,
+                                        });
+                                    },
+                                    Err(e) => {
+                                        return Err(serde::de::Error::custom(format!("Failed to decode base64 value: {}", e)));
+                                    },
+                                }
+                            }
+                        }
                     }
                 };
 
