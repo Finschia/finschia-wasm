@@ -1,8 +1,10 @@
 use ::serde::{ser, Deserialize, Deserializer, Serialize, Serializer};
+use base64::prelude::*;
 use chrono::{DateTime, NaiveDateTime, Utc};
 use cosmwasm_std::StdResult;
 use serde::de;
 use serde::de::Visitor;
+use serde::ser::SerializeStruct;
 
 use std::fmt;
 use std::str::FromStr;
@@ -198,9 +200,17 @@ macro_rules! expand_as_any {
                     }
                 )*
 
-                Err(serde::ser::Error::custom(
-                    "data did not match any type that supports serialization as `Any`",
-                ))
+                if self.type_url.is_empty() {
+                    return Err(serde::ser::Error::custom(
+                        "type_url is empty",
+                    ));
+                }
+
+                let mut any_type = serializer.serialize_struct("Any", 2)?;
+                any_type.serialize_field("type_url", &self.type_url)?;
+                let encode_value = BASE64_STANDARD.encode(&self.value);
+                any_type.serialize_field("value", &encode_value)?;
+                any_type.end()
             }
         }
 
