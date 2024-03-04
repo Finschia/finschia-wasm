@@ -326,6 +326,8 @@ expand_as_any!(
     crate::types::cosmos::crypto::secp256r1::PubKey,
     crate::types::cosmos::crypto::ed25519::PubKey,
 );
+// Test environment and production environment are separated.
+// In test environment, expand_as_any only includs ClearAdminProposal
 #[cfg(test)]
 expand_as_any!(crate::types::cosmwasm::wasm::v1::ClearAdminProposal,);
 
@@ -422,24 +424,60 @@ mod tests {
     }
 
     #[test]
-    fn test_serialization_and_deserialization_with_origin() {
-        let type_url_str = r#"{"content":{"type_url":"/cosmwasm.wasm.v1.ClearAdminProposal","value":"CgNmb28SA2Jhcho/bGluazE0aGoydGF2cThmcGVzZHd4eGN1NDRydHkzaGg5MHZodWpydmNtc3RsNHpyM3R4bWZ2dzlzZ2Yydm44"}, "initial_deposit": [], "proposer": "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
-        let deserialized_data: MsgSubmitProposal = serde_json::from_str(type_url_str).unwrap();
-
-        let macro_str = r#"{"content":{"title":"foo","description":"bar", "contract":"link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}, "initial_deposit": [], "proposer": "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
-        let expected_deserialized_data: MsgSubmitProposal =
-            serde_json::from_str(macro_str).unwrap();
-
-        let result = serde_json::to_string(&deserialized_data).unwrap();
-        let expected = serde_json::to_string(&expected_deserialized_data).unwrap();
-        assert_eq!(result, expected);
+    fn test_deserialization() {
+        let meta_data = r#"{"content":{"type_url":"/cosmwasm.wasm.v1.UpdateAdminProposal","value":"CgNmb28SA2JhchoFYWxpY2UiP2xpbmsxNGhqMnRhdnE4ZnBlc2R3eHhjdTQ0cnR5M2hoOTB2aHVqcnZjbXN0bDR6cjN0eG1mdnc5c2dmMnZuOA=="},"initial_deposit":[],"proposer":"link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
+        let result: MsgSubmitProposal = serde_json::from_str(meta_data).unwrap();
+        let expected_result = MsgSubmitProposal {
+            content: Some(Any {
+                type_url: "/cosmwasm.wasm.v1.UpdateAdminProposal".to_string(),
+                value: vec![
+                    10, 3, 102, 111, 111, 18, 3, 98, 97, 114, 26, 5, 97, 108, 105, 99, 101, 34, 63,
+                    108, 105, 110, 107, 49, 52, 104, 106, 50, 116, 97, 118, 113, 56, 102, 112, 101,
+                    115, 100, 119, 120, 120, 99, 117, 52, 52, 114, 116, 121, 51, 104, 104, 57, 48,
+                    118, 104, 117, 106, 114, 118, 99, 109, 115, 116, 108, 52, 122, 114, 51, 116,
+                    120, 109, 102, 118, 119, 57, 115, 103, 102, 50, 118, 110, 56,
+                ],
+            }),
+            initial_deposit: vec![],
+            proposer: "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8".to_string(),
+        };
+        assert_eq!(result, expected_result);
     }
 
     #[test]
-    fn test_serialization_and_deserialization_result() {
-        let type_url_str = r#"{"content":{"type_url":"/cosmwasm.wasm.v1.UpdateAdminProposal","value":"CgNmb28SA2JhchoFYWxpY2UiP2xpbmsxNGhqMnRhdnE4ZnBlc2R3eHhjdTQ0cnR5M2hoOTB2aHVqcnZjbXN0bDR6cjN0eG1mdnc5c2dmMnZuOA=="},"initial_deposit":[],"proposer":"link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
-        let deserialized_data: MsgSubmitProposal = serde_json::from_str(type_url_str).unwrap();
+    fn test_serialization() {
+        let meta_data = MsgSubmitProposal {
+            content: Some(Any {
+                type_url: "/cosmwasm.wasm.v1.UpdateAdminProposal".to_string(),
+                value: vec![
+                    10, 3, 102, 111, 111, 18, 3, 98, 97, 114, 26, 5, 97, 108, 105, 99, 101, 34, 63,
+                    108, 105, 110, 107, 49, 52, 104, 106, 50, 116, 97, 118, 113, 56, 102, 112, 101,
+                    115, 100, 119, 120, 120, 99, 117, 52, 52, 114, 116, 121, 51, 104, 104, 57, 48,
+                    118, 104, 117, 106, 114, 118, 99, 109, 115, 116, 108, 52, 122, 114, 51, 116,
+                    120, 109, 102, 118, 119, 57, 115, 103, 102, 50, 118, 110, 56,
+                ],
+            }),
+            initial_deposit: vec![],
+            proposer: "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8".to_string(),
+        };
+        let result = serde_json::to_string(&meta_data).unwrap();
+        let expected_result = r#"{"content":{"type_url":"/cosmwasm.wasm.v1.UpdateAdminProposal","value":"CgNmb28SA2JhchoFYWxpY2UiP2xpbmsxNGhqMnRhdnE4ZnBlc2R3eHhjdTQ0cnR5M2hoOTB2aHVqcnZjbXN0bDR6cjN0eG1mdnc5c2dmMnZuOA=="},"initial_deposit":[],"proposer":"link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
+        assert_eq!(result, expected_result);
+    }
+
+    #[test]
+    fn integration_test_serialization_and_deserialization_with_origin() {
+        // Any type which is not included in the expand_as_any list
+        let meta_data = r#"{"content":{"type_url":"/cosmwasm.wasm.v1.ClearAdminProposal","value":"CgNmb28SA2Jhcho/bGluazE0aGoydGF2cThmcGVzZHd4eGN1NDRydHkzaGg5MHZodWpydmNtc3RsNHpyM3R4bWZ2dzlzZ2Yydm44"}, "initial_deposit": [], "proposer": "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
+        let deserialized_data: MsgSubmitProposal = serde_json::from_str(meta_data).unwrap();
         let result = serde_json::to_string(&deserialized_data).unwrap();
-        assert_eq!(result, type_url_str);
+
+        // Any type which is included in the expand_as_any list
+        let macro_data = r#"{"content":{"title":"foo","description":"bar", "contract":"link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}, "initial_deposit": [], "proposer": "link14hj2tavq8fpesdwxxcu44rty3hh90vhujrvcmstl4zr3txmfvw9sgf2vn8"}"#;
+        let expected_deserialized_data: MsgSubmitProposal =
+            serde_json::from_str(macro_data).unwrap();
+        let expected_result = serde_json::to_string(&expected_deserialized_data).unwrap();
+
+        assert_eq!(result, expected_result);
     }
 }
