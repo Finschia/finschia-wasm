@@ -1,5 +1,5 @@
 use finschia_std_derive::CosmwasmExt;
-/// PublicKey defines the keys available for use with Tendermint Validators
+/// PublicKey is a ED25519 or a secp256k1 public key.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(
     Clone,
@@ -11,14 +11,16 @@ use finschia_std_derive::CosmwasmExt;
     ::schemars::JsonSchema,
     CosmwasmExt,
 )]
-#[proto_message(type_url = "/tendermint.crypto.PublicKey")]
+#[proto_message(type_url = "/cometbft.crypto.v1.PublicKey")]
 pub struct PublicKey {
+    /// The type of key.
     #[prost(oneof = "public_key::Sum", tags = "1, 2")]
     pub sum: ::core::option::Option<public_key::Sum>,
 }
 /// Nested message and enum types in `PublicKey`.
 pub mod public_key {
     use finschia_std_derive::CosmwasmExt;
+    /// The type of key.
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(
         Clone,
@@ -36,6 +38,7 @@ pub mod public_key {
         Secp256k1(::prost::alloc::vec::Vec<u8>),
     }
 }
+/// Proof is a Merkle proof.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(
     Clone,
@@ -47,7 +50,7 @@ pub mod public_key {
     ::schemars::JsonSchema,
     CosmwasmExt,
 )]
-#[proto_message(type_url = "/tendermint.crypto.Proof")]
+#[proto_message(type_url = "/cometbft.crypto.v1.Proof")]
 pub struct Proof {
     #[prost(int64, tag = "1")]
     #[serde(
@@ -70,6 +73,7 @@ pub struct Proof {
     #[prost(bytes = "vec", repeated, tag = "4")]
     pub aunts: ::prost::alloc::vec::Vec<::prost::alloc::vec::Vec<u8>>,
 }
+/// ValueOp is a Merkle proof for a single key.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(
     Clone,
@@ -81,7 +85,7 @@ pub struct Proof {
     ::schemars::JsonSchema,
     CosmwasmExt,
 )]
-#[proto_message(type_url = "/tendermint.crypto.ValueOp")]
+#[proto_message(type_url = "/cometbft.crypto.v1.ValueOp")]
 pub struct ValueOp {
     /// Encoded in ProofOp.Key.
     #[prost(bytes = "vec", tag = "1")]
@@ -94,6 +98,7 @@ pub struct ValueOp {
     #[prost(message, optional, tag = "2")]
     pub proof: ::core::option::Option<Proof>,
 }
+/// DominoOp always returns the given output.
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(
     Clone,
@@ -105,7 +110,7 @@ pub struct ValueOp {
     ::schemars::JsonSchema,
     CosmwasmExt,
 )]
-#[proto_message(type_url = "/tendermint.crypto.DominoOp")]
+#[proto_message(type_url = "/cometbft.crypto.v1.DominoOp")]
 pub struct DominoOp {
     #[prost(string, tag = "1")]
     pub key: ::prost::alloc::string::String,
@@ -115,7 +120,7 @@ pub struct DominoOp {
     pub output: ::prost::alloc::string::String,
 }
 /// ProofOp defines an operation used for calculating Merkle root
-/// The data could be arbitrary format, providing nessecary data
+/// The data could be arbitrary format, providing necessary data
 /// for example neighbouring node hash
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(
@@ -128,7 +133,7 @@ pub struct DominoOp {
     ::schemars::JsonSchema,
     CosmwasmExt,
 )]
-#[proto_message(type_url = "/tendermint.crypto.ProofOp")]
+#[proto_message(type_url = "/cometbft.crypto.v1.ProofOp")]
 pub struct ProofOp {
     #[prost(string, tag = "1")]
     pub r#type: ::prost::alloc::string::String,
@@ -157,7 +162,7 @@ pub struct ProofOp {
     ::schemars::JsonSchema,
     CosmwasmExt,
 )]
-#[proto_message(type_url = "/tendermint.crypto.ProofOps")]
+#[proto_message(type_url = "/cometbft.crypto.v1.ProofOps")]
 pub struct ProofOps {
     #[prost(message, repeated, tag = "1")]
     pub ops: ::prost::alloc::vec::Vec<ProofOp>,
