@@ -134,10 +134,6 @@ pub struct GenesisState {
     CosmwasmExt,
 )]
 #[proto_message(type_url = "/cosmos.auth.v1beta1.QueryAccountsRequest")]
-#[proto_query(
-    path = "/cosmos.auth.v1beta1.Query/Accounts",
-    response_type = QueryAccountsResponse
-)]
 pub struct QueryAccountsRequest {
     /// pagination defines an optional pagination for the request.
     #[prost(message, optional, tag = "1")]
@@ -255,10 +251,6 @@ pub struct QueryParamsResponse {
     CosmwasmExt,
 )]
 #[proto_message(type_url = "/cosmos.auth.v1beta1.QueryModuleAccountByNameRequest")]
-#[proto_query(
-    path = "/cosmos.auth.v1beta1.Query/ModuleAccountByName",
-    response_type = QueryModuleAccountByNameResponse
-)]
 pub struct QueryModuleAccountByNameRequest {
     #[prost(string, tag = "1")]
     pub name: ::prost::alloc::string::String,
@@ -293,10 +285,6 @@ pub struct QueryModuleAccountByNameResponse {
     CosmwasmExt,
 )]
 #[proto_message(type_url = "/cosmos.auth.v1beta1.QueryNextAccountNumberRequest")]
-#[proto_query(
-    path = "/cosmos.auth.v1beta1.Query/NextAccountNumber",
-    response_type = QueryNextAccountNumberResponse
-)]
 #[deprecated]
 pub struct QueryNextAccountNumberRequest {}
 /// QueryNextAccountNumberResponse is the response for the Query/NextAccountNumber.
@@ -329,12 +317,6 @@ impl<'a, Q: cosmwasm_std::CustomQuery> AuthQuerier<'a, Q> {
     pub fn new(querier: &'a cosmwasm_std::QuerierWrapper<'a, Q>) -> Self {
         Self { querier }
     }
-    pub fn accounts(
-        &self,
-        pagination: ::core::option::Option<super::super::base::query::v1beta1::PageRequest>,
-    ) -> Result<QueryAccountsResponse, cosmwasm_std::StdError> {
-        QueryAccountsRequest { pagination }.query(self.querier)
-    }
     pub fn account(
         &self,
         address: ::prost::alloc::string::String,
@@ -343,17 +325,5 @@ impl<'a, Q: cosmwasm_std::CustomQuery> AuthQuerier<'a, Q> {
     }
     pub fn params(&self) -> Result<QueryParamsResponse, cosmwasm_std::StdError> {
         QueryParamsRequest {}.query(self.querier)
-    }
-    pub fn module_account_by_name(
-        &self,
-        name: ::prost::alloc::string::String,
-    ) -> Result<QueryModuleAccountByNameResponse, cosmwasm_std::StdError> {
-        QueryModuleAccountByNameRequest { name }.query(self.querier)
-    }
-    #[deprecated]
-    pub fn next_account_number(
-        &self,
-    ) -> Result<QueryNextAccountNumberResponse, cosmwasm_std::StdError> {
-        QueryNextAccountNumberRequest {}.query(self.querier)
     }
 }
